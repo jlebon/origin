@@ -5,7 +5,10 @@ RUN set -x && yum install -y ostree yum-utils selinux-policy-targeted && \
     commit=$( find /srv -name *.commit | sed -Ee 's|.*objects/(.+)/(.+)\.commit|\1\2|' | head -1 ) && \
     mkdir /tmp/working && cd /tmp/working && \
     yumdownloader --destdir=/tmp/rpms origin-node origin-clients && \
-    for i in $(find /tmp/rpms/ -name origin-* -iname *.rpm); do echo "Extracting $i ..."; rpm2cpio $i | cpio -div; done && \
+    for i in $(find /tmp/rpms/ -name origin-* -iname *.rpm); do \
+        echo "Extracting $i ..."; rpm2cpio $i | cpio -div; \
+    done && \
+    rm -rf /usr/share/man && \
     mv etc usr/ && \
     mkdir -p /tmp/tmprootfs/etc && \
     ostree --repo=/srv/repo checkout -U $commit --subpath /usr/etc/selinux /tmp/tmprootfs/etc/selinux && \
